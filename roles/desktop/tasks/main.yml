@@ -63,7 +63,7 @@
     # mutt config
     ###################
     - template:
-           src=config/mutt/.muttrc.j2
+           src=.muttrc.j2
            dst=/home/{{users.user1.name}}/.muttrc
            owner="{{users.user1.name}}"
            group="{{users.user1.name}}"
