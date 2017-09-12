@@ -8,14 +8,14 @@
             comment="{{ users.user1.name }} user"
             shell=/bin/bash
 
-    - name: Add {{ user }} to sudoers
-      template: src=templates/sudoers-user.j2
-                dest=/etc/sudoers.d/{{ users.user1.name }}-sudoer
-                validate='visudo -cf %s'
+#    - name: Add {{ user }} to sudoers
+#      template: src=templates/sudoers-user.j2
+#                dest=/etc/sudoers.d/{{ users.user1.name }}-sudoer
+#                validate='visudo -cf %s'
 
-    - name: Add my public key to {{ user }}
-      authorized_key: user={{ users.user1.name }}
-                      key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+#    - name: Add my public key to {{ user }}
+#      authorized_key: user={{ users.user1.name }}
+#                      key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
     ###################
     # Time management
@@ -75,6 +75,27 @@
 
     - name: Install Google Chrome
       apt: pkg=google-chrome-stable state=installed
+
+    ###################  
+    # Dropbox
+    ###################
+    - name: Download Dropbox
+      get_url: url="{{apt.dropbox_url}}"
+               dest="/tmp/{{apt.dropbox_package}}"
+
+    - name: Install Dropbox
+      apt:  deb="/tmp/{{apt.dropbox_package}}"
+            state=present
+
+    - name: Download Dropbox daemon
+      shell: cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
+      become: true
+      become_user: "{{users.user1.name}}"
+
+    - name: Start Dropbox daemon
+      shell: ~/.dropbox-dist/dropboxd
+      become: true
+      become_user: "{{users.user1.name}}"
 
     ###################
     # Vim config

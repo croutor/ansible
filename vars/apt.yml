@@ -1,4 +1,6 @@
 ---
 apt:
     chrome_source_file: /etc/apt/sources.list.d/google-chrome.list
+    dropbox_package: dropbox_2015.10.28_amd64.deb
+    dropbox_url: https://www.dropbox.com/download?dl=packages/debian/dropbox_2015.10.28_amd64.deb
 
