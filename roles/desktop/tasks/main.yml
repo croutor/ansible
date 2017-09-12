@@ -35,6 +35,7 @@
         - esmtp
         - git
         - gitg
+        - gparted
         - htop
         - meld
         - mutt
