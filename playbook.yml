@@ -2,6 +2,7 @@
 - hosts: all
   remote_user: root
   vars_files:
+    - vars/apt.yml
     - vars/local.yml
     - vars/users.yml
   roles:
