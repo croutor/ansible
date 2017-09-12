@@ -1,0 +1,73 @@
+# written on ansible 2.3.2.0
+---
+    ###################
+    # User Management
+    ###################
+    - name: Create user {{ users.user1.name }}
+      user: name={{ users.user1.name }}
+            comment="{{ users.user1.name }} user"
+            shell=/bin/bash
+
+    - name: Add {{ user }} to sudoers
+      template: src=templates/sudoers-user.j2
+                dest=/etc/sudoers.d/{{ users.user1.name }}-sudoer
+                validate='visudo -cf %s'
+
+    - name: Add my public key to {{ user }}
+      authorized_key: user={{ users.user1.name }}
+                      key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    ###################
+    # Time management
+    ###################
+    - name: Set local timezone
+      timezone:
+              name={{ local.timezone }}
+
+    ###################
+    # Debian packages
+    ###################
+    - name: Install Debian packages
+      package: name={{ item }} state=latest
+      with_items:
+        - build-essential
+        - ddd
+        - esmtp
+        - git
+        - gitg
+        - htop
+        - mutt
+        - python-pip
+        - subversion
+        - terminator
+        - tree
+        - valgrind
+        - vim
+
+    ###################
+    # Python / Virtualenv
+    ###################
+    - name: Install virtualenv
+      pip: name=virtualenv
+
+    ###################
+    # Vim config
+    ###################
+    - name: Vim configuration
+      copy: src=.vimrc
+            dst=/home/{{users.user1.name}}/.vimrc
+            owner="{{users.user1.name}}"
+            group="{{users.user1.name}}"
+
+    ###################
+    # mutt config
+    ###################
+    - template:
+           src=config/mutt/.muttrc.j2
+           dst=/home/{{users.user1.name}}/.muttrc
+           owner="{{users.user1.name}}"
+           group="{{users.user1.name}}"
+           mode=0600
+
+  ###################
+

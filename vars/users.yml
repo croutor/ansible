@@ -1,0 +1,3 @@
+users:
+    # Username
+        user1: { name: croutor, fullname: 'M. Croutor', email: croutor@XXXXXX.com }
