@@ -67,7 +67,7 @@
       when: google_apt_exists.rc == 1
 
     - name: Add Google Chrome repo
-      copy: content="deb http://dl.google.com/linux/chrome/deb/ stable main" dest={{apt_file}} owner=root group=root mode=644
+      copy: content="deb http://dl.google.com/linux/chrome/deb/ stable main" dest={{apt.chrome_source_file}} owner=root group=root mode=644
       when: google_apt_exists.rc == 1
 
     - name: Update apt cache
@@ -80,29 +80,39 @@
     ###################  
     # Dropbox
     ###################
+    - name: Does the Dropbox startup file exist?
+      command: test -f /home/{{users.user1.name}}/.config/autostart/dropbox.desktop
+      register: dropbox_startup_exists
+      ignore_errors: True
+
     - name: Download Dropbox
       get_url: url="{{apt.dropbox_url}}"
                dest="/tmp/{{apt.dropbox_package}}"
+      when: dropbox_startup_exists.rc == 1
 
     - name: Install Dropbox
       apt:  deb="/tmp/{{apt.dropbox_package}}"
             state=present
+      when: dropbox_startup_exists.rc == 1
 
     - name: Download Dropbox daemon
       shell: cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
       become: true
       become_user: "{{users.user1.name}}"
+      when: dropbox_startup_exists.rc == 1
 
-    - name: Start Dropbox daemon
-      shell: ~/.dropbox-dist/dropboxd
-      become: true
-      become_user: "{{users.user1.name}}"
+    - name: Start Dropbox automatically on startup
+      template: src=dropbox.desktop.tpl
+                dst=/home/{{users.user1.name}}/.config/autostart/dropbox.desktop
+                owner="{{users.user1.name}}"
+                group="{{users.user1.name}}"
+      when: dropbox_startup_exists.rc == 1
 
     ###################
     # Vim config
     ###################
     - name: Vim configuration
-      copy: src=.vimrc
+      copy: src=vimrc.tpl
             dst=/home/{{users.user1.name}}/.vimrc
             owner="{{users.user1.name}}"
             group="{{users.user1.name}}"
