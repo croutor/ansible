@@ -33,10 +33,14 @@
         - build-essential
         - ddd
         - esmtp
+        - exuberant-ctags 
         - git
         - gitg
         - gparted
         - htop
+        - libncurses5-dev 
+        - libssl-dev
+        - make 
         - meld
         - mutt
         - python-pip
@@ -112,20 +116,46 @@
     # Vim config
     ###################
     - name: Vim configuration
-      copy: src=vimrc.tpl
-            dst=/home/{{users.user1.name}}/.vimrc
-            owner="{{users.user1.name}}"
-            group="{{users.user1.name}}"
+      template: 
+           src={{role_path}}/templates/.vimrc.tpl
+           dest=/home/{{users.user1.name}}/.vimrc
+           owner="{{users.user1.name}}"
+           group="{{users.user1.name}}"
 
     ###################
     # mutt config
     ###################
-    - template:
-           src=.muttrc.j2
-           dst=/home/{{users.user1.name}}/.muttrc
+    - name: Mutt configuration
+      template:
+           src={{role_path}}/templates/.muttrc.j2
+           dest=/home/{{users.user1.name}}/.muttrc
            owner="{{users.user1.name}}"
            group="{{users.user1.name}}"
            mode=0600
+
+    ###################
+    # git config
+    ###################
+    - name: Git configuration
+      git_config:
+              name=user.email
+              value={{users.user1.email}}
+              scope=global
+      become: true
+      become_user: "{{users.user1.name}}"
+
+    - git_config:
+              name=user.name
+              value={{users.user1.name}}
+              scope=global
+      become: true
+      become_user: "{{users.user1.name}}"
+
+    - git_config:
+              list_all=yes
+              scope=global
+      become: true
+      become_user: "{{users.user1.name}}"
 
   ###################
 

@@ -1,0 +1,52 @@
+# written on ansible 2.3.2.0
+---
+    ###################
+    # Docker
+    ###################
+    # https://docs.docker.com/engine/installation/linux/docker-ce/debian/#install-using-the-repository
+    # apt-get remove docker docker-engine docker.io
+    # apt-get update
+    # apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common
+    # curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
+    # sudo apt-key fingerprint 0EBFCD88
+    # add-apt-repository \
+    #    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+    #     $(lsb_release -cs) \
+    #     stable"
+    # sudo apt-get update
+    # sudo apt-get install docker-ce
+    - name: Removing old docker installation
+      package: name={{ item }} state=absent
+      with_items:
+        - docker
+        - docker-engine
+        - docker.io
+      ignore_errors: True
+
+    - name: Install packages to allow apt to use a repository over HTTPS
+      package: name={{ item }} state=latest 
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg2
+        - software-properties-common
+    
+    - name: Retrieve distrib release
+      command: lsb_release -cs
+      register: docker_distrib_release
+
+    - name: Retrieve distrib name
+      shell: . /etc/os-release; echo "$ID"
+      register: docker_distrib_name
+
+    - name: Adding Docker apt-key
+      shell: wget -q -O - https://download.docker.com/linux/{{docker_distrib_name.stdout}}/gpg | apt-key add -
+
+    - name: Add Docker repo
+      copy: content="deb [arch=amd64] https://download.docker.com/linux/{{docker_distrib_name.stdout}} {{docker_distrib_release.stdout}} stable" dest={{apt.docker_source_file}} owner=root group=root mode=644
+
+    - name: Install Docker-CE
+      apt: pkg=docker-ce state=installed
+           update_cache=yes
+

@@ -7,3 +7,4 @@
     - vars/users.yml
   roles:
     - desktop
+    - docker
