@@ -1,6 +1,7 @@
 ---
 apt:
     chrome_source_file: /etc/apt/sources.list.d/google-chrome.list
+    sublimetxt_source_file: /etc/apt/sources.list.d/sublime-text.list
     docker_source_file: /etc/apt/sources.list.d/docker.list
     dropbox_package: dropbox_2015.10.28_amd64.deb
     dropbox_url: https://www.dropbox.com/download?dl=packages/debian/dropbox_2015.10.28_amd64.deb
