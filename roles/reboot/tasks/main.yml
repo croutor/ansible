@@ -1,0 +1,10 @@
+---
+  - name: reboot
+    shell: echo 1 > /proc/sys/kernel/sysrq && echo b > /proc/sysrq-trigger
+    async: 30
+    poll: 0
+    become: true
+
+  - name: waiting for server to come back after reboot
+    local_action: wait_for host={{ inventory_hostname }} delay=10 port=22 timeout=300
+...

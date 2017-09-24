@@ -30,10 +30,12 @@
     - name: Install Debian packages
       package: name={{ item }} state=latest
       with_items:
+        - audacity
         - build-essential
         - ddd
         - esmtp
-        - exuberant-ctags 
+        - exuberant-ctags
+        - filezilla 
         - git
         - gitg
         - gparted
@@ -42,15 +44,18 @@
         - libssl-dev
         - make 
         - meld
+        - mixxx
         - mutt
         - python-pip
         - shellcheck
+        - sshpass
         - subversion
         - sudo
         - terminator
         - tree
         - valgrind
         - vim
+        - vlc
 
     ###################
     # Python / Virtualenv
