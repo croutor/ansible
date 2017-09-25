@@ -48,7 +48,9 @@
         - mixxx
         - mutt
         - python-pip
+        - psutils
         - shellcheck
+        - socat
         - sshpass
         - subversion
         - sudo
@@ -57,6 +59,7 @@
         - valgrind
         - vim
         - vlc
+        - x11-xserver-utils
 
     ###################
     # Python / Virtualenv
