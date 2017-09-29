@@ -47,7 +47,9 @@
         - meld
         - mixxx
         - mutt
+        - powerline
         - python-pip
+        - python-pygit2
         - psutils
         - shellcheck
         - socat
